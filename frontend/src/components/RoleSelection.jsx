@@ -4,64 +4,72 @@ import { useApp } from '../context/AppContext';
 const RoleSelection = ({ onRoleSelect }) => {
   const { darkMode, toggleDarkMode } = useApp();
 
-  const handleRoleSelect = (role) => {
-    console.log(`Selected role: ${role}`);
-    onRoleSelect(role);
-  };
-
   return (
     <div className="container">
       <button className="theme-toggle" onClick={toggleDarkMode}>
         {darkMode ? '☀️' : '🌙'}
       </button>
       
-      <div className="card fade-in" style={{ maxWidth: '600px', margin: '2rem auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1>QueueFlow</h1>
-          <p style={{ fontSize: '1.2rem', color: 'var(--text-dark)' }}>
+      <div className="card fade-in" style={{ maxWidth: '800px', margin: '2rem auto' }}>
+        {/* Main Header */}
+        <div style={{ marginBottom: '3rem' }}>
+          <h1 className="main-title">QueueFlow</h1>
+          <p className="subtitle">
             Digital Queue Management System
           </p>
         </div>
 
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h2>Welcome! Who are you?</h2>
-          <p style={{ color: 'var(--text-dark)', opacity: 0.8, marginBottom: '0' }}>
+        {/* Welcome Section */}
+        <div className="welcome-section">
+          <h2 className="welcome-title">Welcome! Who are you?</h2>
+          <p className="welcome-subtitle">
             Please select your role to continue
           </p>
         </div>
 
+        {/* Role Selection Grid */}
         <div className="grid grid-2">
+          {/* Customer Card */}
           <div 
             className="card role-card customer"
-            onClick={() => handleRoleSelect('customer')}
+            onClick={() => onRoleSelect('customer')}
           >
             <div className="role-icon">👤</div>
-            <h3 style={{ color: 'var(--primary-orange)' }}>Customer</h3>
-            <p style={{ fontSize: '0.95rem' }}>
-              Get a ticket and track your position in queue
+            <h3 className="role-title" style={{ color: 'var(--primary-orange)' }}>
+              Customer
+            </h3>
+            <p className="role-description">
+              Get a digital ticket and track your real-time position in the queue with live updates and estimated wait times.
             </p>
             <button 
               className="btn btn-primary" 
-              style={{ marginTop: '1rem' }}
-              onClick={() => handleRoleSelect('customer')}
+              onClick={(e) => {
+                e.stopPropagation();
+                onRoleSelect('customer');
+              }}
             >
               Enter as Customer
             </button>
           </div>
 
+          {/* Staff Card */}
           <div 
             className="card role-card staff"
-            onClick={() => handleRoleSelect('staff')}
+            onClick={() => onRoleSelect('staff')}
           >
             <div className="role-icon">👨‍💼</div>
-            <h3 style={{ color: 'var(--primary-green)' }}>Staff Member</h3>
-            <p style={{ fontSize: '0.95rem' }}>
-              Manage queue and serve customers efficiently
+            <h3 className="role-title" style={{ color: 'var(--primary-green)' }}>
+              Staff Member
+            </h3>
+            <p className="role-description">
+              Manage customer queues efficiently, serve customers in order, and monitor queue statistics in real-time.
             </p>
             <button 
               className="btn btn-primary" 
-              style={{ marginTop: '1rem' }}
-              onClick={() => handleRoleSelect('staff')}
+              onClick={(e) => {
+                e.stopPropagation();
+                onRoleSelect('staff');
+              }}
             >
               Enter as Staff
             </button>
