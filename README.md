@@ -33,44 +33,6 @@ A modern, responsive queue management system built with React that allows custom
 - Node.js (v14 or higher)
 - npm or yarn
 
-### Installation
-
-1. Clone the repository:
-\\\ash
-git clone https://github.com/YOUR_USERNAME/digital-queue-system.git
-cd digital-queue-system/frontend
-\\\
-
-2. Install dependencies:
-\\\ash
-npm install
-\\\
-
-3. Start the development server:
-\\\ash
-npm run dev
-\\\
-
-4. Open your browser and navigate to \http://localhost:5173\
-
-## Project Structure
-
-\\\
-frontend/
-├── src/
-│   ├── components/          # React components
-│   │   ├── RoleSelection.jsx
-│   │   ├── CustomerDashboard.jsx
-│   │   ├── StaffDashboard.jsx
-│   │   └── ...
-│   ├── context/            # React context for state management
-│   │   └── AppContext.jsx
-│   ├── App.jsx             # Main app component
-│   ├── App.css             # Global styles
-│   └── main.jsx            # Entry point
-├── public/                 # Static files
-└── package.json           # Dependencies and scripts
-\\\
 
 ## Usage
 
