@@ -116,7 +116,13 @@ const StaffDashboard = () => {
           <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button 
               className="btn btn-primary" 
-              onClick={serveNextCustomer}
+              onClick={async () => {
+                try {
+                  await serveNextCustomer();
+                } catch (err) {
+                  console.error('Failed to serve next:', err);
+                }
+              }}
               disabled={globalQueue.length === 0}
               style={{ minWidth: '160px' }}
             >

@@ -1,4 +1,8 @@
 ﻿import React, { createContext, useContext, useState, useEffect } from "react";
+import io from 'socket.io-client';
+
+const API_BASE = 'http://localhost:4000/api';
+const SOCKET_URL = 'http://localhost:4000';
 
 const AppContext = createContext();
 
@@ -10,6 +14,7 @@ export const AppProvider = ({ children }) => {
   const [globalQueue, setGlobalQueue] = useState([]);
   const [currentServing, setCurrentServing] = useState(null);
   const [servedTickets, setServedTickets] = useState([]);
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     const savedDarkMode = localStorage.getItem('darkMode');
@@ -19,6 +24,28 @@ export const AppProvider = ({ children }) => {
     }
   }, []);
 
+  useEffect(() => {
+    // Connect to socket
+    const newSocket = io(SOCKET_URL);
+    setSocket(newSocket);
+
+    // Load initial tickets
+    fetchTickets();
+
+    // Listen for real-time updates
+    newSocket.on('ticket:created', (ticket) => {
+      setGlobalQueue(prev => [...prev, ticket]);
+    });
+
+    newSocket.on('ticket:served', (served) => {
+      setCurrentServing(served.id);
+      setGlobalQueue(prev => prev.filter(t => t.id !== served.id));
+      setServedTickets(prev => [served, ...prev]);
+    });
+
+    return () => newSocket.close();
+  }, []);
+
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
@@ -26,47 +53,53 @@ export const AppProvider = ({ children }) => {
     document.body.setAttribute("data-theme", newDarkMode ? "dark" : "light");
   };
 
-  // Add a ticket to the global queue
-  const addToQueue = (ticket) => {
-    const newPosition = globalQueue.length + 1;
-    const newTicket = {
-      ...ticket,
-      position: newPosition,
-      waitTime: newPosition * 2 + Math.floor(Math.random() * 5),
-      timestamp: new Date(),
-      joinTime: new Date()
-    };
-    setGlobalQueue(prev => [...prev, newTicket]);
-    return newTicket;
+  const fetchTickets = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/tickets`);
+      const tickets = await res.json();
+      setGlobalQueue(tickets.filter(t => t.status === 'waiting'));
+      setServedTickets(tickets.filter(t => t.status === 'served'));
+    } catch (err) {
+      console.error('Failed to fetch tickets:', err);
+    }
   };
 
-  // Staff serves next customer
-  const serveNextCustomer = () => {
-    if (globalQueue.length > 0) {
-      const nextCustomer = globalQueue[0];
-      setCurrentServing(nextCustomer.id);
-      
-      // Remove the served customer and update positions
-      const updatedQueue = globalQueue.slice(1).map((ticket, index) => ({
-        ...ticket,
-        position: index + 1,
-        waitTime: Math.max(1, ticket.waitTime - 2)
-      }));
-      
-      setGlobalQueue(updatedQueue);
-      
-      // Add to served tickets with completion time
-      const servedTicket = {
-        ...nextCustomer,
-        servedAt: new Date(),
-        status: 'completed'
-      };
-      setServedTickets(prev => [servedTicket, ...prev]);
-      
-      return nextCustomer;
+  // Add a ticket to the global queue via backend
+  const addToQueue = async (ticketData) => {
+    try {
+      const res = await fetch(`${API_BASE}/tickets`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(ticketData)
+      });
+      const ticket = await res.json();
+      // Socket will handle adding to queue
+      return ticket;
+    } catch (err) {
+      console.error('Failed to create ticket:', err);
+      throw err;
     }
-    setCurrentServing(null);
-    return null;
+  };
+
+  // Staff serves next customer via backend
+  const serveNextCustomer = async (counter = '1') => {
+    try {
+      const res = await fetch(`${API_BASE}/queue/serve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ counter })
+      });
+      if (res.status === 404) {
+        alert('No waiting tickets');
+        return null;
+      }
+      const served = await res.json();
+      // Socket will handle updates
+      return served;
+    } catch (err) {
+      console.error('Failed to serve next:', err);
+      throw err;
+    }
   };
 
   // Call a specific ticket (skip to a particular customer)
