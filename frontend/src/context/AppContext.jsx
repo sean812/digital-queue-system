@@ -25,12 +25,23 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    // Load initial tickets
+    const fetchTickets = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/tickets`);
+        const tickets = await res.json();
+        setGlobalQueue(tickets.filter(t => t.status === 'waiting'));
+        setServedTickets(tickets.filter(t => t.status === 'served'));
+      } catch (err) {
+        console.error('Failed to fetch tickets:', err);
+      }
+    };
+
+    fetchTickets();
+
     // Connect to socket
     const newSocket = io(SOCKET_URL);
     setSocket(newSocket);
-
-    // Load initial tickets
-    fetchTickets();
 
     // Listen for real-time updates
     newSocket.on('ticket:created', (ticket) => {
@@ -51,17 +62,6 @@ export const AppProvider = ({ children }) => {
     setDarkMode(newDarkMode);
     localStorage.setItem('darkMode', JSON.stringify(newDarkMode));
     document.body.setAttribute("data-theme", newDarkMode ? "dark" : "light");
-  };
-
-  const fetchTickets = async () => {
-    try {
-      const res = await fetch(`${API_BASE}/tickets`);
-      const tickets = await res.json();
-      setGlobalQueue(tickets.filter(t => t.status === 'waiting'));
-      setServedTickets(tickets.filter(t => t.status === 'served'));
-    } catch (err) {
-      console.error('Failed to fetch tickets:', err);
-    }
   };
 
   // Add a ticket to the global queue via backend
