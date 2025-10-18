@@ -66,9 +66,9 @@ const QueueStatus = ({ ticket, onBack }) => {
         {myTicket && (
           <div style={{
             padding: '1.5rem',
-            background: isMyTurn ? 'linear-gradient(135deg, #28a745, #20c997)' :
-                       ticketServed ? 'linear-gradient(135deg, #6c757d, #5a6268)' :
-                       'linear-gradient(135deg, #007bff, #0056b3)',
+            background: isMyTurn ? '#28a745' :
+                       ticketServed ? '#6c757d' :
+                       '#007bff',
             borderRadius: 'var(--border-radius)',
             color: 'white',
             marginBottom: '2rem',
@@ -175,7 +175,7 @@ const QueueStatus = ({ ticket, onBack }) => {
                     className="card"
                     style={{
                       padding: '1rem',
-                      background: isMyTicket ? 'linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(0, 86, 179, 0.1))' : 'var(--card-bg)',
+                      background: isMyTicket ? 'rgba(0, 123, 255, 0.1)' : 'var(--card-bg)',
                       border: isMyTicket ? '2px solid #007bff' : '1px solid var(--border-color)',
                       display: 'flex',
                       justifyContent: 'space-between',

@@ -76,7 +76,7 @@ const CustomerDashboard = ({ ticket, selectedService }) => {
           <h1 style={{ marginBottom: '1rem' }}>Your Ticket</h1>
           
           <div style={{ 
-            background: `linear-gradient(135deg, ${getServiceColor(ticket.service)}, ${getServiceColor(ticket.service)}dd)`,
+            background: getServiceColor(ticket.service),
             color: 'white',
             padding: '2rem',
             borderRadius: 'var(--border-radius)',

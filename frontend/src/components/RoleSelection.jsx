@@ -71,7 +71,7 @@ const RoleSelection = ({ onRoleSelect }) => {
                 e.stopPropagation();
                 onRoleSelect('check-status');
               }}
-              style={{ background: 'linear-gradient(135deg, #007bff, #0056b3)' }}
+              style={{ background: '#007bff' }}
             >
               Track Ticket
             </button>
