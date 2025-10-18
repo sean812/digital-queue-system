@@ -6,6 +6,8 @@ import NameEntry from './components/NameEntry';
 import PhoneEntry from './components/PhoneEntry';
 import CustomerDashboard from './components/CustomerDashboard';
 import StaffDashboard from './components/StaffDashboard';
+import TicketLookup from './components/TicketLookup';
+import QueueStatus from './components/QueueStatus';
 import { useApp } from './context/AppContext';
 import './App.css';
 
@@ -21,6 +23,8 @@ function AppContent() {
     setUserRole(role);
     if (role === 'customer') {
       setCurrentView('service-selection');
+    } else if (role === 'check-status') {
+      setCurrentView('ticket-lookup');
     } else {
       setCurrentView(`${role}-dashboard`);
     }
@@ -63,8 +67,43 @@ function AppContent() {
     setCustomerTicket(null);
   };
 
+  const handleTicketFound = (ticket) => {
+    setCustomerTicket(ticket);
+    setCurrentView('queue-status');
+  };
+
   const renderCurrentView = () => {
     switch (currentView) {
+      case 'queue-status':
+        return (
+          <div>
+            <button 
+              onClick={handleBackToRoleSelection}
+              className="btn btn-primary back-button"
+            >
+              ← Back to Home
+            </button>
+            <QueueStatus 
+              ticket={customerTicket}
+              onBack={handleBackToRoleSelection}
+            />
+          </div>
+        );
+      case 'ticket-lookup':
+        return (
+          <div>
+            <button 
+              onClick={handleBackToRoleSelection}
+              className="btn btn-primary back-button"
+            >
+              ← Back to Home
+            </button>
+            <TicketLookup 
+              onTicketFound={handleTicketFound}
+              onBack={handleBackToRoleSelection}
+            />
+          </div>
+        );
       case 'customer-dashboard':
         return (
           <div>

@@ -22,7 +22,7 @@ const CounterDisplay = ({ counter }) => {
           color: counter.status === 'busy' ? 'var(--primary-orange)' : 'var(--primary-green)',
           fontWeight: 'bold'
         }}>
-          {counter.status === 'busy' ? '🔴 Serving' : '🟢 Available'}
+          {counter.status === 'busy' ? 'Busy Serving' : 'Now Available'}
         </span>
       </div>
 
