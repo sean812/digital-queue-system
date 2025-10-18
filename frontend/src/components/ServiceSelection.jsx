@@ -123,7 +123,7 @@ const ServiceSelection = ({ onServiceSelect }) => {
                   onServiceSelect(service);
                 }}
                 style={{ 
-                  background: `linear-gradient(135deg, ${service.color}, ${service.color}dd)`,
+                  background: service.color,
                   width: '100%',
                   marginTop: 'auto'
                 }}

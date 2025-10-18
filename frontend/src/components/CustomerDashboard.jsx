@@ -3,18 +3,33 @@ import { useApp } from '../context/AppContext';
 
 const CustomerDashboard = ({ ticket, selectedService }) => {
   const { globalQueue, currentServing } = useApp();
+  const [position, setPosition] = useState(null);
   const [waitTime, setWaitTime] = useState('Calculating...');
 
-  // Calculate wait time for current ticket
+  // Calculate position and wait time for current ticket
   useEffect(() => {
     if (ticket && globalQueue.length > 0) {
-      const ticketInQueue = globalQueue.find(t => t.id === ticket.id);
-      if (ticketInQueue) {
-        const minutes = ticketInQueue.waitTime;
-        setWaitTime(`${minutes} min`);
+      // Find waiting tickets sorted by ID (order they were created)
+      const waitingTickets = globalQueue.filter(t => t.status === 'waiting').sort((a, b) => a.id - b.id);
+      
+      // Find this ticket's position
+      const ticketIndex = waitingTickets.findIndex(t => t.id === ticket.id);
+      
+      if (ticketIndex >= 0) {
+        const pos = ticketIndex + 1;
+        setPosition(pos);
+        // Estimate 3 minutes per person ahead
+        const estimatedWait = Math.max(1, (pos - 1) * 3);
+        setWaitTime(`${estimatedWait} min`);
       } else {
+        // Ticket not in queue (might be served or removed)
+        setPosition(null);
         setWaitTime('Almost there!');
       }
+    } else if (ticket) {
+      // No queue data yet, but we have a ticket
+      setPosition(1);
+      setWaitTime('3 min');
     }
   }, [globalQueue, ticket]);
 
@@ -76,7 +91,7 @@ const CustomerDashboard = ({ ticket, selectedService }) => {
           <h1 style={{ marginBottom: '1rem' }}>Your Ticket</h1>
           
           <div style={{ 
-            background: `linear-gradient(135deg, ${getServiceColor(ticket.service)}, ${getServiceColor(ticket.service)}dd)`,
+            background: getServiceColor(ticket.service),
             color: 'white',
             padding: '2rem',
             borderRadius: 'var(--border-radius)',
@@ -114,7 +129,7 @@ const CustomerDashboard = ({ ticket, selectedService }) => {
                   Your Position
                 </h3>
                 <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--primary-orange)' }}>
-                  {currentPosition || 'N/A'}
+                  {position !== null ? position : '...'}
                 </div>
               </div>
               

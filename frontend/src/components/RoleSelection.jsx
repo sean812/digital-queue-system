@@ -23,12 +23,12 @@ const RoleSelection = ({ onRoleSelect }) => {
         <div className="welcome-section">
           <h2 className="welcome-title">Welcome! Who are you?</h2>
           <p className="welcome-subtitle">
-            Please select your role to continue
+            Please select an option to continue
           </p>
         </div>
 
         {/* Role Selection Grid */}
-        <div className="grid grid-2">
+        <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
           {/* Customer Card */}
           <div 
             className="card role-card customer"
@@ -36,10 +36,10 @@ const RoleSelection = ({ onRoleSelect }) => {
           >
             <div className="role-icon">👤</div>
             <h3 className="role-title" style={{ color: 'var(--primary-orange)' }}>
-              Customer
+              New Customer
             </h3>
             <p className="role-description">
-              Get a digital ticket and track your real-time position in the queue with live updates and estimated wait times.
+              Get a digital ticket and join the queue for service.
             </p>
             <button 
               className="btn btn-primary" 
@@ -48,7 +48,32 @@ const RoleSelection = ({ onRoleSelect }) => {
                 onRoleSelect('customer');
               }}
             >
-              Enter as Customer
+              Get Ticket
+            </button>
+          </div>
+
+          {/* Check Status Card */}
+          <div 
+            className="card role-card"
+            onClick={() => onRoleSelect('check-status')}
+            style={{ borderTop: '4px solid #007bff' }}
+          >
+            <div className="role-icon">🔍</div>
+            <h3 className="role-title" style={{ color: '#007bff' }}>
+              Check Status
+            </h3>
+            <p className="role-description">
+              Track your ticket and see your position in the queue.
+            </p>
+            <button 
+              className="btn btn-primary" 
+              onClick={(e) => {
+                e.stopPropagation();
+                onRoleSelect('check-status');
+              }}
+              style={{ background: '#007bff' }}
+            >
+              Track Ticket
             </button>
           </div>
 
@@ -62,7 +87,7 @@ const RoleSelection = ({ onRoleSelect }) => {
               Staff Member
             </h3>
             <p className="role-description">
-              Manage customer queues efficiently, serve customers in order, and monitor queue statistics in real-time.
+              Manage customer queues and serve customers efficiently.
             </p>
             <button 
               className="btn btn-primary" 
