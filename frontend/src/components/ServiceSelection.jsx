@@ -61,7 +61,7 @@ const ServiceSelection = ({ onServiceSelect }) => {
         {darkMode ? '☀️' : '🌙'}
       </button>
       
-      <div className="card fade-in" style={{ maxWidth: '1000px', margin: '2rem auto' }}>
+      <div className="card fade-in" style={{ maxWidth: '1000px', margin: '2rem auto', height:'90vh', overflowY: 'auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <h1 className="main-title">Select Service Type</h1>
           <p className="subtitle">
